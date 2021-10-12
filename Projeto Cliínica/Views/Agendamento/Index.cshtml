@@ -1,0 +1,132 @@
+﻿@{
+    ViewData["Title"] = "Agendamento";
+}
+@model IEnumerable<Agendamento>;
+<div class="row">
+    <div class="col-12 mt-2 mb-3">
+        <h1>Listagem de Agendamento</h1>
+        <a asp-action="Create" class="btn btn-primary mt-3"> Novo Agendamento </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.ID)</th>
+                    <th>@Html.DisplayNameFor(model => model.Paciente)</th>
+                    <th>@Html.DisplayNameFor(model => model.Medico)</th>
+                    <th>@Html.DisplayNameFor(model => model.DataHoraConsulta)</th>
+                    <th class="text-center">Editar</th>
+                    <th class="text-center">Remover</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if(Model != null)
+            {
+                @foreach(Agendamento agendamento in Model)
+                {
+                <tr>
+                    <td>@agendamento.ID</td>
+                    <td>@agendamento.Paciente.Usuario.Nome</td>
+                    <td>@agendamento.Medico.Usuario.Nome</td>
+                    <td>@agendamento.DataHoraConsulta</td>
+                    <td class="text-center">
+                        <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@agendamento.ID" style="color: #ffffff; font-size:16px">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </td>
+                    <td class="text-center">
+                        <a class="btn btn-sm btn-danger btnAbrirModalRemocao" data-toggle="modal" data-target="#modalRemocao" data-code="@agendamento.ID" style="color: #ffffff; font-size:16px">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                }
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal" id="modalRemocao" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-center">
+                    <div>
+                        <i class="fa fa-4x fa-minus-circle text-danger"></i>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center" style="padding-top: 12px;">
+                    <span class="h4">Tem certeza?</span>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <small style="text-align: center">Deseja realmente remover este livro do sistema? </small>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-center" style="border-top: 0px;">
+                <form>
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-sm btn-danger" asp-action="Delete" id="btnRemover">Remover</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function ($) {
+        var trReference = null;
+
+        $('.btnAbrirModalRemocao').on('click', function () {
+            trReference = $(this).parents(':eq(1)');
+        });
+
+
+        $('#modalRemocao').on('show.bs.modal', function (e) {
+            let code = $(e.relatedTarget).data('code');
+            let s = document.getElementById('btnRemover').getAttribute('data-id');
+            document.getElementById('btnRemover').removeAttribute('data-id');
+            document.getElementById('btnRemover').setAttribute('data-id', code);
+        });
+
+        $('#btnRemover').on('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const id = $(this).attr('data-id');
+            const url = $(this).attr('formaction');
+            const btn = $(this);
+
+            $.ajax({
+                type: 'DELETE',
+                url: url + '/' + id,
+                beforeSend: function () {
+                    btn.html(
+                        `<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>&nbsp;Salvar`
+                    ).attr('disabled', true);
+                },
+                success: function (response) {
+                    $("#modalRemocao").modal("hide");
+                    trReference.hide(300);
+                    trReference.remove();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sucesso!',
+                        text: 'Agendamento deletado com sucesso!'
+                    })
+                },
+                error: function (response) {
+                    $("#modalRemocao").modal("hide");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ops, ocorreu um erro inesperado na deleção do agendamento',
+                        text: response.responseText
+                    });
+                }
+            }).always(function (response) {
+                btn.html('Salvar').removeAttr('disabled');
+            });
+
+        });
+
+    });
+</script>

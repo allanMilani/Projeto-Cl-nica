@@ -1,0 +1,97 @@
+﻿@{
+    ViewData["Title"] = "Agendamento";
+}
+@model Projeto_Cliínica.Models.Agendamento;
+<form action="/Agendamento/Create" method="post" id="frmCadastroAgendamento">
+    <div class="row mt-4 mb-4">
+        <div class="col-12 col-md-6">
+            <div class="form-group">
+                <label asp-for="@Model.Paciente"></label>
+                <select asp-for="@Model.Paciente.ID" class="form-control" asp-items="@ViewBag.Pacientes"></select>
+                <span asp-validation-for="@Model.Paciente.ID" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="form-group">
+                <label asp-for="@Model.Medico"></label>
+                <select asp-for="@Model.Medico.ID" class="form-control" asp-items="@ViewBag.Medicos"></select>
+                <span asp-validation-for="@Model.Medico.ID" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="form-group">
+                <label asp-for="@Model.DataHoraConsulta"></label>
+                <input asp-for="@Model.DataHoraConsulta" class="form-control" required />
+                <span asp-validation-for="@Model.DataHoraConsulta" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label asp-for="@Model.Observacao"></label>
+                <textarea asp-for="@Model.Observacao" class="form-control"></textarea>
+                <span asp-validation-for="@Model.Observacao" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <button type="submit" id="btnCriarAgendamento" class="btn btn-primary">Salvar</button>
+            </div>
+        </div>
+        <div class="col-12">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        </div>
+    </div>
+</form>
+<script>
+    jQuery(document).ready(function ($) {
+        $("#btnCriarAgendamento").on("click", function (event) {
+            console.log($("#frmCadastroAgendamento")[0].checkValidity());
+            if ($("#frmCadastroAgendamento")[0].checkValidity() == false)
+                return;
+            else {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const $form = $("#frmCadastroAgendamento");
+                const dadosForm = new FormData($form[0]);
+                const urlForm = $form.attr("action");
+                const method = $form.attr("method");
+
+                $.ajax({
+                    type: method,
+                    url: urlForm,
+                    data: dadosForm,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function () {
+                        $form.find("button").html(
+                            "<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>&nbsp;Salvar"
+                        ).attr("disabled", true);
+                    },
+                    success: function (response) {
+                        $form[0].reset();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Sucesso!',
+                            text: 'Agendamento salvo com sucesso'
+                        })
+                    },
+                    error: function (response) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ops, ocorreu um erro inesperado no agendamento',
+                            text: response.responseText
+                        })
+                    }
+                }).always(function (response) {
+                    console.log(response);
+                    $form.find("button").html("Salvar").removeAttr("disabled");
+                });
+            }
+        });
+    });
+</script>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

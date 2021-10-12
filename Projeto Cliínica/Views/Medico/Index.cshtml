@@ -1,0 +1,168 @@
+﻿@{
+    ViewData["Title"] = "Medico";
+}
+@model IEnumerable<Medico>;
+
+<div class="row">
+    <div class="col-12 mt-2 mb-3">
+        <h1>Listagem de Médicos</h1>
+        <a asp-action="Create" class="btn btn-primary mt-3"> Novo Medico </a>
+    </div>
+</div>
+<form method="post">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <div class="form-group">
+                <label for="txtNome">Nome</label>
+                <input type="text" id="txtNome" name="Usuario.Nome" class="form-control" placeholder="digite o nome" />
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <label for="txtEmail">E-mail</label>
+            <input type="email" id="txtEmail" name="Usuario.Email" class="form-control" placeholder="digite o e-mail" />
+        </div>
+        <div class="col-12 col-md-4">
+            <label for="txtDataNascimento">Data de Nascimento</label>
+            <input type="date" id="txtDataNascimento" name="Usuario.DataNascimento" class="form-control" />
+        </div>
+        <div class="col-12 col-md-4">
+            <label for="txtCpf">CPF</label>
+            <input type="text" id="txtCpf" name="Usuario.CPF" class="form-control cpf" placeholder="digite o cpf" />
+        </div>
+        <div class="col-12 col-md-4">
+            <label for="txtCrm">CRM</label>
+            <input type="text" id="txtCrm" name="CRM" class="form-control" placeholder="digite o crm" />
+        </div>
+        <div class="col-12 mt-3">
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Pesquisar</button>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="row mt-3">
+   <div class="col-12">
+       <table class="table">
+           <thead class="thead-dark">
+               <tr>
+                   <th>@Html.DisplayNameFor(model => model.ID)</th>
+                   <th>@Html.DisplayNameFor(model => model.Usuario.Nome)</th>
+                   <th>@Html.DisplayNameFor(model => model.Usuario.Email)</th>
+                   <th>@Html.DisplayNameFor(model => model.Usuario.DataNascimento)</th>
+                   <th>@Html.DisplayNameFor(model => model.Usuario.CPF)</th>
+                   <th>@Html.DisplayNameFor(model => model.CRM)</th>
+                   <th class="text-center">Editar</th>
+                   <th class="text-center">Remover</th>
+               </tr>
+           </thead>
+           <tbody>
+               @if(Model != null)
+            {
+                @foreach(Medico medico in Model)
+                {
+               <tr>
+                   <td>@medico.ID</td>
+                   <td>@medico.Usuario.Nome</td>
+                   <td>@medico.Usuario.Email</td>
+                   <td>@Html.DisplayFor(model => medico.Usuario.DataNascimento)</td>
+                   <td>@medico.Usuario.CPF</td>
+                   <td>@medico.CRM</td>
+                   <td class="text-center">
+                       <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@medico.ID" style="color: #ffffff; font-size:16px">
+                           <i class="fas fa-edit"></i>
+                       </a>
+                   </td>
+                   <td class="text-center">
+                       <a class="btn btn-sm btn-danger btnAbrirModalRemocao" data-toggle="modal" data-target="#modalRemocao" data-code="@medico.ID" style="color: #ffffff; font-size:16px">
+                           <i class="fas fa-trash"></i>
+                       </a>
+                   </td>
+               </tr>
+                }
+            }
+           </tbody>
+       </table>
+   </div>
+</div>
+<div class="modal" id="modalRemocao" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-center">
+                    <div>
+                        <i class="fa fa-4x fa-minus-circle text-danger"></i>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center" style="padding-top: 12px;">
+                    <span class="h4">Tem certeza?</span>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <small style="text-align: center">Deseja realmente remover este livro do sistema? </small>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-center" style="border-top: 0px;">
+                <form>
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-sm btn-danger" asp-action="Delete" id="btnRemover">Remover</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function ($) {
+        var trReference = null;
+
+        $('.btnAbrirModalRemocao').on('click', function () {
+            trReference = $(this).parents(':eq(1)');
+        });
+            
+
+        $('#modalRemocao').on('show.bs.modal', function (e) {
+            let code = $(e.relatedTarget).data('code');
+            let s = document.getElementById('btnRemover').getAttribute('data-id');
+            document.getElementById('btnRemover').removeAttribute('data-id');
+            document.getElementById('btnRemover').setAttribute('data-id', code);
+        });
+
+        $('#btnRemover').on('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const id = $(this).attr('data-id');
+            const url = $(this).attr('formaction');
+            const btn = $(this);
+
+            $.ajax({
+                type: 'DELETE',
+                url: url + '/' + id,
+                beforeSend: function () {
+                    btn.html(
+                        `<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>&nbsp;Salvar`
+                    ).attr('disabled', true);
+                },
+                success: function (response) {
+                    $("#modalRemocao").modal("hide");
+                    trReference.hide(300);
+                    trReference.remove();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sucesso!',
+                        text: 'Mádico deletado com sucesso!'
+                    })
+                },
+                error: function (response) {
+                    $("#modalRemocao").modal("hide");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ops, ocorreu um erro inesperado na deleção do médico',
+                        text: response.responseText
+                    });
+                }
+            }).always(function (response) {
+                btn.html('Salvar').removeAttr('disabled');
+            });
+
+        });
+
+    });
+</script>

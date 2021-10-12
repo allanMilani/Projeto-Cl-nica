@@ -1,0 +1,133 @@
+﻿@{
+    ViewData["Title"] = "Paciente";
+}
+@model Projeto_Cliínica.Models.Paciente;
+<form action="/Paciente/Edit" method="post" id="frmAtualizaPaciente">
+    <input type="hidden" asp-for="ID" />
+    <div class="row mt-4 mb-4">
+        <div class="col-12 col-md-6">
+            <div class="form-group">
+                <label asp-for="@Model.Usuario.Nome"></label>
+                <input asp-for="@Model.Usuario.Nome" class="form-control" required />
+                <span asp-validation-for="@Model.Usuario.Nome" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="form-group">
+                <label asp-for="@Model.Usuario.Email"></label>
+                <input asp-for="@Model.Usuario.Email" class="form-control" required />
+                <span asp-validation-for="@Model.Usuario.Email" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="form-group">
+                <label asp-for="@Model.Usuario.DataNascimento"></label>
+                <input asp-for="@Model.Usuario.DataNascimento" class="form-control" required />
+                <span asp-validation-for="@Model.Usuario.DataNascimento" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="form-group">
+                <label asp-for="@Model.Usuario.CPF"></label>
+                <input asp-for="@Model.Usuario.CPF" class="form-control cpf" required />
+                <span asp-validation-for="@Model.Usuario.CPF" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="form-group">
+                <label asp-for="@Model.Telefone"></label>
+                <input asp-for="@Model.Telefone" class="form-control tel" required />
+                <span asp-validation-for="@Model.Telefone" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-5">
+            <div class="form-group">
+                <label asp-for="@Model.Endereco"></label>
+                <input asp-for="@Model.Endereco" class="form-control" required />
+                <span asp-validation-for="@Model.Endereco" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="form-group">
+                <label asp-for="@Model.Profissao"></label>
+                <input asp-for="@Model.Profissao" class="form-control" required />
+                <span asp-validation-for="@Model.Profissao" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-2">
+            <div class="form-group">
+                <label asp-for="@Model.Sexo"></label>
+                <select asp-for="@Model.Sexo" class="form-control" asp-items="@ViewBag.Sexo" required></select>
+                <span asp-validation-for="@Model.Sexo" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label asp-for="@Model.Observacao"></label>
+                <textarea asp-for="@Model.Observacao" class="form-control"></textarea>
+                <span asp-validation-for="@Model.Observacao" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <button type="submit" id="btnAtualizaPaciente" class="btn btn-primary">Salvar</button>
+            </div>
+        </div>
+        <div class="col-12">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        </div>
+    </div>
+</form>
+<script>
+    jQuery(document).ready(function ($) {
+        $("#btnAtualizaPaciente").on("click", function (event) {
+            console.log($("#frmAtualizaPaciente")[0].checkValidity());
+            if ($("#frmAtualizaPaciente")[0].checkValidity() == false)
+                return;
+            else {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const $form = $("#frmAtualizaPaciente");
+                const dadosForm = new FormData($form[0]);
+                const urlForm = $form.attr("action");
+                const method = $form.attr("method");
+
+                $.ajax({
+                    type: method,
+                    url: urlForm,
+                    data: dadosForm,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function () {
+                        $form.find("button").html(
+                            "<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>&nbsp;Salvar"
+                        ).attr("disabled", true);
+                    },
+                    success: function (response) {
+                        $form[0].reset();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Sucesso!',
+                            text: 'Paciente salvo com sucesso'
+                        })
+                    },
+                    error: function (response) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ops, ocorreu um erro inesperado no cadastro do paciente',
+                            text: response.responseText
+                        })
+                    }
+                }).always(function (response) {
+                    console.log(response);
+                    $form.find("button").html("Salvar").removeAttr("disabled");
+                });
+            }
+        });
+    });
+</script>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
