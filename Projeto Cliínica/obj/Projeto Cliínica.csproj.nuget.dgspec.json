@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\allan\\source\\repos\\Projeto Cliínica\\Projeto Cliínica\\Projeto Cliínica.csproj": {}
+    "C:\\Users\\Richard\\Source\\Repos\\Projeto-Cl-nica\\Projeto Cliínica\\Projeto Cliínica.csproj": {}
   },
   "projects": {
-    "C:\\Users\\allan\\source\\repos\\Projeto Cliínica\\Projeto Cliínica\\Projeto Cliínica.csproj": {
+    "C:\\Users\\Richard\\Source\\Repos\\Projeto-Cl-nica\\Projeto Cliínica\\Projeto Cliínica.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\allan\\source\\repos\\Projeto Cliínica\\Projeto Cliínica\\Projeto Cliínica.csproj",
+        "projectUniqueName": "C:\\Users\\Richard\\Source\\Repos\\Projeto-Cl-nica\\Projeto Cliínica\\Projeto Cliínica.csproj",
         "projectName": "Projeto Cliínica",
-        "projectPath": "C:\\Users\\allan\\source\\repos\\Projeto Cliínica\\Projeto Cliínica\\Projeto Cliínica.csproj",
-        "packagesPath": "C:\\Users\\allan\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\allan\\source\\repos\\Projeto Cliínica\\Projeto Cliínica\\obj\\",
+        "projectPath": "C:\\Users\\Richard\\Source\\Repos\\Projeto-Cl-nica\\Projeto Cliínica\\Projeto Cliínica.csproj",
+        "packagesPath": "C:\\Users\\Richard\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Richard\\Source\\Repos\\Projeto-Cl-nica\\Projeto Cliínica\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\allan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Richard\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,8 +22,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://nuget.org": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net5.0": {
@@ -41,6 +40,18 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[5.0.11, )"
+            },
+            "Microsoft.AspNetCore.Http": {
+              "target": "Package",
+              "version": "[2.2.2, )"
+            },
+            "Microsoft.AspNetCore.Http.Abstractions": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
             "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": {
               "target": "Package",
               "version": "[5.0.4, )"
@@ -78,7 +89,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100-rc.2.21505.57\\RuntimeIdentifierGraph.json"
         }
       }
     }

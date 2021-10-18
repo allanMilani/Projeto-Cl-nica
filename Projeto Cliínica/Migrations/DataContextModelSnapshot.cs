@@ -68,23 +68,13 @@ namespace Projeto_Cliínica.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Capacidade")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("MedicoID")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PacienteID")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SecretariaID")
+                    b.Property<int>("Papel")
                         .HasColumnType("int");
 
                     b.Property<string>("Senha")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("User")
                         .IsRequired()
@@ -92,12 +82,6 @@ namespace Projeto_Cliínica.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("MedicoID");
-
-                    b.HasIndex("PacienteID");
-
-                    b.HasIndex("SecretariaID");
 
                     b.ToTable("TBLogins");
                 });
@@ -203,6 +187,9 @@ namespace Projeto_Cliínica.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("LoginID")
+                        .HasColumnType("int");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(250)
@@ -213,31 +200,12 @@ namespace Projeto_Cliínica.Migrations
 
                     b.HasKey("ID");
 
+                    b.HasIndex("LoginID");
+
                     b.ToTable("TBUsuarios");
                 });
 
             modelBuilder.Entity("Projeto_Cliínica.Models.Agendamento", b =>
-                {
-                    b.HasOne("Projeto_Cliínica.Models.Medico", "Medico")
-                        .WithMany()
-                        .HasForeignKey("MedicoID");
-
-                    b.HasOne("Projeto_Cliínica.Models.Paciente", "Paciente")
-                        .WithMany()
-                        .HasForeignKey("PacienteID");
-
-                    b.HasOne("Projeto_Cliínica.Models.Secretaria", "Secretaria")
-                        .WithMany()
-                        .HasForeignKey("SecretariaID");
-
-                    b.Navigation("Medico");
-
-                    b.Navigation("Paciente");
-
-                    b.Navigation("Secretaria");
-                });
-
-            modelBuilder.Entity("Projeto_Cliínica.Models.Login", b =>
                 {
                     b.HasOne("Projeto_Cliínica.Models.Medico", "Medico")
                         .WithMany()
@@ -289,6 +257,15 @@ namespace Projeto_Cliínica.Migrations
                         .IsRequired();
 
                     b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("Projeto_Cliínica.Models.Usuario", b =>
+                {
+                    b.HasOne("Projeto_Cliínica.Models.Login", "Login")
+                        .WithMany()
+                        .HasForeignKey("LoginID");
+
+                    b.Navigation("Login");
                 });
 #pragma warning restore 612, 618
         }

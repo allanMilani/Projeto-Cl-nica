@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using System;
-using System.Collections.Generic;
+﻿using System.Text;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -20,20 +18,32 @@ namespace Projeto_Cliínica.Models
 
         [DisplayName("Senha")]
         [Required(ErrorMessage = "Por favor, informe a senha")]
-        [MinLength(5, ErrorMessage = "O nome deve possuir, no mínimo cinco caracteres")]
-        [MaxLength(100, ErrorMessage = "O nome deve possuir, no máximo 100 caracteres")]
+        [MinLength(5, ErrorMessage = "A senha deve possuir, no mínimo cinco caracteres")]
+        [MaxLength(500, ErrorMessage = "A senha deve possuir, no máximo 100 caracteres")]
         [DataType(DataType.Password)]
         public string Senha
-        {
-            get => Senha;
+        { get; set;
+            /*
+            get => "123456";
             set
             {
                 Senha = geraHash(value);
             }
+            */
         }
-
+        /*
+         * O item abaixo define o papel que usuário irá ter no sistema.
+         * 0 = Administrador;
+         * 1 = Médico;
+         * 2 = Secretária;
+         * 3 = Paciente.
+         */
+        [DisplayName("Papel do Usuário")]
+        public int Papel { get; set; }
+        /*
         [DisplayName("Capacidade usuário")]
-        [Required(ErrorMessage = "Por favor, informe a capacidade")]
+        //[Required(ErrorMessage = "Por favor, informe a capacidade")]
+        
         public string Capacidade { get; set; }
         [DisplayName("Medico")]
         public virtual Medico Medico { get; set; }
@@ -44,26 +54,40 @@ namespace Projeto_Cliínica.Models
         [DisplayName("Secretaria")]
         public virtual Secretaria Secretaria { get; set; }
         public int? SecretariaID { get; set; }
-        //[DisplayName("Administrador")]
-        //public bool IsAdmin { get; set; }
-        private string geraHash(string senha)
+        [DisplayName("Administrador")]
+        public bool IsAdmin { get; set; }
+        */
+        public string geraHash(string senha)
         {
-            // generate a 128-bit salt using a cryptographically strong random sequence of nonzero values
-            byte[] salt = new byte[128 / 8];
-            using (var rngCsp = new RNGCryptoServiceProvider())
+            string processado;
+
+            processado = geraBase64(geraBase64(geraBase64(geraBase64(geraBase64(geraMD5(geraMD5(geraMD5(senha))))))));
+
+            return processado;
+        }
+
+        private string geraMD5(string texto)
+        {
+            MD5 md5Hash = MD5.Create();
+            // Converter a String para array de bytes, que é como a biblioteca trabalha.
+            byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(texto));
+
+            // Cria-se um StringBuilder para recompôr a string.
+            StringBuilder sBuilder = new StringBuilder();
+
+            // Loop para formatar cada byte como uma String em hexadecimal
+            for (int i = 0; i < data.Length; i++)
             {
-                rngCsp.GetNonZeroBytes(salt);
+                sBuilder.Append(data[i].ToString("x2"));
             }
 
-            // derive a 256-bit subkey (use HMACSHA256 with 100,000 iterations)
-            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: senha,
-                salt: salt,
-                prf: KeyDerivationPrf.HMACSHA256,
-                iterationCount: 100000,
-                numBytesRequested: 256 / 8));
-
-            return hashed;
+            return sBuilder.ToString();
+        }
+        private string geraBase64(string texto)
+        {
+            byte[] textoAsBytes = Encoding.ASCII.GetBytes(texto);
+            string resultado = System.Convert.ToBase64String(textoAsBytes);
+            return resultado;
         }
     }
 }

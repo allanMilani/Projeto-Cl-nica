@@ -36,6 +36,10 @@ namespace Projeto_Cliínica.Models
         [DisplayName("Status paciente")]
         public bool Status { get; set; }
 
+        [DisplayName("Login")]
+        //[Required(ErrorMessage = "Por favor informe o login")]
+        public Login Login { get; set; }
+        public int? LoginID { get; set; }
         //public Usuario(string nome, string email, DateTime dataNascimento, string cpf)
         //{
         //    Nome = nome;
