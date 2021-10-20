@@ -16,20 +16,22 @@ namespace Projeto_Cliínica.Models
         [MaxLength(100, ErrorMessage = "O nome deve possuir, no máximo 100 caracteres")]
         public string User { get; set; }
 
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+        private string _senha;
         [DisplayName("Senha")]
         [Required(ErrorMessage = "Por favor, informe a senha")]
         [MinLength(5, ErrorMessage = "A senha deve possuir, no mínimo cinco caracteres")]
         [MaxLength(500, ErrorMessage = "A senha deve possuir, no máximo 100 caracteres")]
         [DataType(DataType.Password)]
         public string Senha
-        { get; set;
-            /*
-            get => "123456";
-            set
+        {
+            get { return _senha; }
+            set { _senha = geraHash(value); }
+           /* set
             {
                 Senha = geraHash(value);
-            }
-            */
+            }*/
+            
         }
         /*
          * O item abaixo define o papel que usuário irá ter no sistema.

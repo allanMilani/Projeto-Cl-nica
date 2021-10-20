@@ -123,7 +123,7 @@ namespace Projeto_Cliínica.Controllers
                 {
                     Login login = new Login();
                     login.User = "novo";
-                    login.Senha = login.geraHash("123456");
+                    login.Senha = "123456";
                     login.Papel = 2;
                     dataContext.TBLogins.Add(login);
                     dataContext.SaveChanges();
