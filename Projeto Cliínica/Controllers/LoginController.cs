@@ -4,10 +4,10 @@ using Projeto_Cliínica.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Projeto_Cliínica.Controllers
 {
@@ -20,6 +20,7 @@ namespace Projeto_Cliínica.Controllers
         }
         public IActionResult Index()
         {
+            primeiroUsuario();
             if (User.Identity.IsAuthenticated)
                 return RedirectToAction("Index", "Home");
             return View();
@@ -29,7 +30,13 @@ namespace Projeto_Cliínica.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Index(Login login)
         {
-            login.Senha = login.geraHash(login.Senha);
+            Login padrao = new Login();
+            padrao.User = "admin";
+            padrao.Senha = "admin";
+
+            string senhaInicial;
+            senhaInicial = (login.Senha == padrao.Senha) ? "S" : "F";
+
             if (ModelState.IsValid)
             {
                 bool logado = dataContext.TBLogins.Any(x => x.User == login.User && x.Senha == login.Senha);
@@ -59,6 +66,7 @@ namespace Projeto_Cliínica.Controllers
                 new Claim(ClaimTypes.Sid, user.ID.ToString()),
                 new Claim(ClaimTypes.Name, user.User),
                 new Claim(ClaimTypes.Role, role),
+                new Claim(ClaimTypes.Expired, senhaInicial)
             };
 
                     ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -75,12 +83,57 @@ namespace Projeto_Cliínica.Controllers
                 }
             }
 
-            ViewBag.Erro = "Usuário e/ou senha inválidos. Teste2: " + login.Senha;
+            ViewBag.Erro = "Usuário e/ou senha inválidos.";
             return View();
 
 
         }
 
+        public IActionResult Sair()
+        {
+            HttpContext.SignOutAsync();
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AlteraSenha(string senha1, string senha2)
+        {
+            Login login = new Login();
+            login.User = "admin";
+            Login loginValidacao = await dataContext.TBLogins
+                    .FindAsync(1);
+            if (senha1 != senha2)
+                return BadRequest("As senhas não coincidem!");
+
+            try
+            {
+                loginValidacao.Senha = senha1;
+                await dataContext.SaveChangesAsync();
+                Sair();
+                return Ok(true);
+            }catch (Exception ex)
+            {
+                return BadRequest("Ocorreu um erro inesperado ao processar a alteração de senha!");
+            }
+
+            return BadRequest("Erro ao alterar");
+        }
+        private void primeiroUsuario()
+        {
+            
+            IQueryable<Login> query = dataContext.TBLogins;
+            query = query.Where(l => l.ID != 0);
+
+            if (query.Count() == 0)
+            {
+                Login login = new Login();
+                login.User = "admin";
+                login.Senha = "admin";
+                login.Papel = 0;
+                dataContext.TBLogins.Add(login);
+                dataContext.SaveChanges();
+            }
+        }
 
     }
 }
