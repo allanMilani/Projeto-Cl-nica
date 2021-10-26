@@ -22,12 +22,12 @@ namespace Projeto_Cliínica.Controllers
             dataContext = dc;
         }
 
-        private bool ExistMedico(Medico medico)
+        private bool ExistUsuario(Usuario usuario)
         {
             var result = (
                 from user in dataContext.TBUsuarios
-                join med in dataContext.TBMedicos on user.ID equals med.UsuarioID
-                where user.CPF == medico.Usuario.CPF && user.Status == true
+                join log in dataContext.TBLogins on user.LoginID equals log.ID
+                where user.CPF == usuario.CPF && user.Status == true && log.User != "novo"
                 select new { 
                     id = user.ID
                 }
@@ -85,17 +85,17 @@ namespace Projeto_Cliínica.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(Medico medico)
+        public async Task<ActionResult> Create(Usuario usuario)
         {
             if (ModelState.IsValid == false)
                 return BadRequest("Os dados informados são inválidos");
-            if (!ExistMedico(medico))
-                return BadRequest("O médico informado já existe");
-            if(!Validacoes.IsValidCPF(medico.Usuario.CPF))
+            if (!ExistUsuario(usuario))
+                return BadRequest("O usuário informado já existe");
+            if(!Validacoes.IsValidCPF(usuario.CPF))
                 return BadRequest("O CPF informado está inválido");
 
             IQueryable<Usuario> query = dataContext.TBUsuarios;
-            query = query.Where(u => u.CPF == medico.Usuario.CPF);
+            query = query.Where(u => u.CPF == usuario.CPF);
 
             if(query.Count() > 0)
             {
@@ -104,17 +104,25 @@ namespace Projeto_Cliínica.Controllers
                 {
                     foreach (var u in lista)
                     {
-                        medico.UsuarioID = u.ID;
-                        medico.Usuario = null;
+                        Login login = await dataContext.TBLogins.FindAsync(u.LoginID);
+                        Usuario usuarioQuery = await dataContext.TBUsuarios.FindAsync(u.ID);
+                        if (login != null && usuarioQuery != null) {
+                            login.User = usuario.Login.User;
+                            login.Senha = usuario.Login.Senha;
 
-                        dataContext.TBMedicos.Add(medico);
-                        await dataContext.SaveChangesAsync();
-                        return Ok(true);
+                            usuarioQuery.Nome = usuario.Nome.Trim();
+                            usuarioQuery.Email = usuario.Email;
+                            usuarioQuery.DataNascimento = usuario.DataNascimento;
+
+                            await dataContext.SaveChangesAsync();
+                            return Ok(true);
+                        }
+                        return BadRequest("Ocorreu um erro inesperado no cadastro do usuário, por favor tente novamente");
                     }
                 }
                 catch
                 {
-                    return BadRequest("Ocorreu um erro inesperado no cadastro do médico, por favor tente novamente");
+                    return BadRequest("Ocorreu um erro inesperado no cadastro do usuário, por favor tente novamente");
                 }
             }
             else

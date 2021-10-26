@@ -1,47 +1,58 @@
 ﻿@{
-    ViewData["Title"] = "Medico";
+    ViewData["Title"] = "Usuários";
 }
-@model Projeto_Cliínica.Models.Medico;
-<form action="/Medico/Create" method="post" id="frmCadastroMedico">
+@model Projeto_Cliínica.Models.Usuario;
+<form action="/Usuario/Create" method="post" id="frmCadastroUsuario">
     <div class="row mt-4 mb-4">
         <div class="col-12 col-md-6">
             <div class="form-group">
-                <label asp-for="@Model.Usuario.Nome"></label>
-                <input asp-for="@Model.Usuario.Nome" class="form-control" required/>
-                <span asp-validation-for="@Model.Usuario.Nome" class="text-danger small"></span>
+                <label asp-for="@Model.Nome"></label>
+                <input asp-for="@Model.Nome" class="form-control" required />
+                <span asp-validation-for="@Model.Nome" class="text-danger small"></span>
             </div>
         </div>
         <div class="col-12 col-md-6">
             <div class="form-group">
-                <label asp-for="@Model.Usuario.Email"></label>
-                <input asp-for="@Model.Usuario.Email" class="form-control" required/>
-                <span asp-validation-for="@Model.Usuario.Email" class="text-danger small"></span>
+                <label asp-for="@Model.Email"></label>
+                <input asp-for="@Model.Email" class="form-control" required />
+                <span asp-validation-for="@Model.Email" class="text-danger small"></span>
             </div>
         </div>
         <div class="col-12 col-md-4">
             <div class="form-group">
-                <label asp-for="@Model.Usuario.DataNascimento"></label>
-                <input asp-for="@Model.Usuario.DataNascimento" class="form-control" required/>
-                <span asp-validation-for="@Model.Usuario.DataNascimento" class="text-danger small"></span>
+                <label asp-for="@Model.DataNascimento"></label>
+                <input asp-for="@Model.DataNascimento" class="form-control" required />
+                <span asp-validation-for="@Model.DataNascimento" class="text-danger small"></span>
             </div>
         </div>
         <div class="col-12 col-md-4">
             <div class="form-group">
-                <label asp-for="@Model.Usuario.CPF"></label>
-                <input asp-for="@Model.Usuario.CPF" class="form-control cpf" required/>
-                <span asp-validation-for="@Model.Usuario.CPF" class="text-danger small"></span>
+                <label asp-for="@Model.CPF"></label>
+                <input asp-for="@Model.CPF" class="form-control cpf" required />
+                <span asp-validation-for="@Model.CPF" class="text-danger small"></span>
             </div>
         </div>
         <div class="col-12 col-md-4">
             <div class="form-group">
-                <label asp-for="@Model.CRM"></label>
-                <input asp-for="@Model.CRM" class="form-control" required/>
-                <span asp-validation-for="@Model.CRM" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="form-group">
+                <label asp-for="@Model.Login.User"></label>
+                <input asp-for="@Model.Login.User" class="form-control" required />
+                <span asp-validation-for="@Model.Login.User" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="form-group">
+                <label asp-for="@Model.Login.Senha"></label>
+                <input asp-for="@Model.Login.Senha" class="form-control" required />
+                <span asp-validation-for="@Model.Login.Senha" class="text-danger small"></span>
             </div>
         </div>
         <div class="col-12">
             <div class="form-group">
-                <button type="submit" id="btnCriarMedico" class="btn btn-primary">Salvar</button>
+                <button type="submit" id="btnCriarUsuario" class="btn btn-primary">Salvar</button>
             </div>
         </div>
         <div class="col-12">
@@ -51,15 +62,15 @@
 </form>
 <script>
     jQuery(document).ready(function ($) {
-        $("#btnCriarMedico").on("click", function (event) {
-            console.log($("#frmCadastroMedico")[0].checkValidity());
-            if ($("#frmCadastroMedico")[0].checkValidity() == false)
+        $("#btnCriarUsuario").on("click", function (event) {
+            console.log($("#frmCadastroUsuario")[0].checkValidity());
+            if ($("#frmCadastroUsuario")[0].checkValidity() == false)
                 return;
             else {
                 event.preventDefault();
                 event.stopPropagation();
 
-                const $form = $("#frmCadastroMedico");
+                const $form = $("#frmCadastroUsuario");
                 const dadosForm = new FormData($form[0]);
                 const urlForm = $form.attr("action");
                 const method = $form.attr("method");
@@ -81,18 +92,17 @@
                         Swal.fire({
                             icon: 'success',
                             title: 'Sucesso!',
-                            text: 'Médico salvo com sucesso'
+                            text: 'Usuário salvo com sucesso'
                         })
                     },
                     error: function (response) {
                         Swal.fire({
                             icon: 'error',
-                            title: 'Ops, ocorreu um erro inesperado no cadastro do médico',
+                            title: 'Ops, ocorreu um erro inesperado no cadastro do usuário',
                             text: response.responseText
                         })
                     }
                 }).always(function (response) {
-                    console.log(response);
                     $form.find("button").html("Salvar").removeAttr("disabled");
                 });
             }

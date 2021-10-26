@@ -311,7 +311,6 @@ C:\Users\allan\source\repos\Projeto Cliínica\Projeto Cliínica\bin\Debug\net5.0
 C:\Users\allan\source\repos\Projeto Cliínica\Projeto Cliínica\bin\Debug\net5.0\Microsoft.IdentityModel.Protocols.dll
 C:\Users\allan\source\repos\Projeto Cliínica\Projeto Cliínica\bin\Debug\net5.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\allan\source\repos\Projeto Cliínica\Projeto Cliínica\bin\Debug\net5.0\Microsoft.IdentityModel.Tokens.dll
-C:\Users\allan\source\repos\Projeto Cliínica\Projeto Cliínica\bin\Debug\net5.0\Newtonsoft.Json.dll
 C:\Users\allan\source\repos\Projeto Cliínica\Projeto Cliínica\bin\Debug\net5.0\System.Configuration.ConfigurationManager.dll
 C:\Users\allan\source\repos\Projeto Cliínica\Projeto Cliínica\bin\Debug\net5.0\System.Diagnostics.DiagnosticSource.dll
 C:\Users\allan\source\repos\Projeto Cliínica\Projeto Cliínica\bin\Debug\net5.0\System.IdentityModel.Tokens.Jwt.dll
@@ -1204,3 +1203,7 @@ C:\Users\Richard\Source\Repos\Projeto-Cl-nica\Projeto Cliínica\obj\Debug\net5.0
 C:\Users\Richard\Source\Repos\Projeto-Cl-nica\Projeto Cliínica\obj\Debug\net5.0\Projeto Cliínica.pdb
 C:\Users\Richard\Source\Repos\Projeto-Cl-nica\Projeto Cliínica\obj\Debug\net5.0\Projeto Cliínica.genruntimeconfig.cache
 C:\Users\Richard\Source\Repos\Projeto-Cl-nica\Projeto Cliínica\obj\Debug\net5.0\Projeto Cliínica.csproj.CopyComplete
+C:\Users\allan\source\repos\Projeto Cliínica\Projeto Cliínica\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\allan\source\repos\Projeto Cliínica\Projeto Cliínica\obj\Debug\net5.0\Razor\Views\Usuario\Create.cshtml.g.cs
+C:\Users\allan\source\repos\Projeto Cliínica\Projeto Cliínica\obj\Debug\net5.0\Razor\Views\Usuario\Edit.cshtml.g.cs
+C:\Users\allan\source\repos\Projeto Cliínica\Projeto Cliínica\obj\Debug\net5.0\Razor\Views\Usuario\Index.cshtml.g.cs
