@@ -93,28 +93,64 @@ namespace Projeto_Cliínica.Controllers
                 return BadRequest("O médico informado já existe");
             if(!Validacoes.IsValidCPF(medico.Usuario.CPF))
                 return BadRequest("O CPF informado está inválido");
-            try
-            {
-                Usuario usuario = new Usuario();
-                usuario.Nome = medico.Usuario.Nome;
-                usuario.Email = medico.Usuario.Email;
-                usuario.DataNascimento = medico.Usuario.DataNascimento;
-                usuario.CPF = medico.Usuario.CPF;
-                usuario.Status = true;
-                dataContext.TBUsuarios.Add(usuario);
-                dataContext.SaveChanges();
 
-                medico.UsuarioID = usuario.ID;
-                medico.Usuario = null;
+            IQueryable<Usuario> query = dataContext.TBUsuarios;
+            query = query.Where(u => u.CPF == medico.Usuario.CPF);
 
-                dataContext.TBMedicos.Add(medico);
-                await dataContext.SaveChangesAsync();
-                return Ok(true);
-            }
-            catch
+            if(query.Count() > 0)
             {
-                return BadRequest("Ocorreu um erro inesperado no cadastro do médico, por favor tente novamente");
+                List<Usuario> lista = query.ToList();
+                try
+                {
+                    foreach (var u in lista)
+                    {
+                        medico.UsuarioID = u.ID;
+                        medico.Usuario = null;
+
+                        dataContext.TBMedicos.Add(medico);
+                        await dataContext.SaveChangesAsync();
+                        return Ok(true);
+                    }
+                }
+                catch
+                {
+                    return BadRequest("Ocorreu um erro inesperado no cadastro do médico, por favor tente novamente");
+                }
             }
+            else
+            {
+                try
+                {
+                    Login login = new Login();
+                    login.User = "novo";
+                    login.Senha = "123456";
+                    login.Papel = 2;
+                    dataContext.TBLogins.Add(login);
+                    dataContext.SaveChanges();
+
+                    Usuario usuario = new Usuario();
+                    usuario.Nome = medico.Usuario.Nome;
+                    usuario.Email = medico.Usuario.Email;
+                    usuario.DataNascimento = medico.Usuario.DataNascimento;
+                    usuario.CPF = medico.Usuario.CPF;
+                    usuario.Status = true;
+                    usuario.LoginID = login.ID;
+                    dataContext.TBUsuarios.Add(usuario);
+                    dataContext.SaveChanges();
+
+                    medico.UsuarioID = usuario.ID;
+                    medico.Usuario = null;
+
+                    dataContext.TBMedicos.Add(medico);
+                    await dataContext.SaveChangesAsync();
+                    return Ok(true);
+                }
+                catch
+                {
+                    return BadRequest("Ocorreu um erro inesperado no cadastro do médico, por favor tente novamente");
+                }
+            }
+            return BadRequest("Ocorreu um erro inesperado no cadastro do médico, por favor tente novamente");
         }
         
         public IActionResult Edit(int? ID)
