@@ -38,7 +38,8 @@ namespace Projeto_Cliínica.Models
          * 0 = Administrador;
          * 1 = Médico;
          * 2 = Secretária;
-         * 3 = Paciente.
+         * 3 = Paciente;
+         * 4 = Usuário
          */
         [DisplayName("Papel do Usuário")]
         public int Papel { get; set; }

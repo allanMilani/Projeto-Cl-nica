@@ -158,7 +158,7 @@ namespace Projeto_Cliínica.Controllers
                 await dataContext.SaveChangesAsync();
                 return Ok(true);
             }
-            catch(Exception e)
+            catch
             {
                 return BadRequest("Ocorreu um erro inesperado na atualização do médico, por favor tente novamente");
             }

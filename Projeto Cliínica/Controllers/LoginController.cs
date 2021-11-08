@@ -111,12 +111,11 @@ namespace Projeto_Cliínica.Controllers
                 await dataContext.SaveChangesAsync();
                 Sair();
                 return Ok(true);
-            }catch (Exception ex)
+            }catch
             {
                 return BadRequest("Ocorreu um erro inesperado ao processar a alteração de senha!");
             }
 
-            return BadRequest("Erro ao alterar");
         }
         private void primeiroUsuario()
         {
