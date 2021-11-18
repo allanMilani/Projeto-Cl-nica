@@ -32,8 +32,9 @@ namespace Projeto_Cliínica.Controllers
         {
             Login padrao = new Login();
             padrao.User = "admin";
-            padrao.Senha = "admin";
+            padrao.Senha = padrao.geraHash("admin");
 
+            login.Senha = login.geraHash(login.Senha);
             string senhaInicial;
             senhaInicial = (login.Senha == padrao.Senha) ? "S" : "F";
 
@@ -79,7 +80,10 @@ namespace Projeto_Cliínica.Controllers
                     };
 
                     HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-                    return RedirectToAction("Index", "Home");
+                    if(senhaInicial == "S")
+                        return RedirectToAction("Alterar", "Login");
+                    else
+                        return RedirectToAction("Index", "Home");
                 }
             }
 
@@ -95,6 +99,11 @@ namespace Projeto_Cliínica.Controllers
             return RedirectToAction("Index");
         }
 
+        public IActionResult Alterar()
+        {
+            return View("Alterar");
+        }
+
         [HttpPost]
         public async Task<ActionResult> AlteraSenha(string senha1, string senha2)
         {
@@ -104,10 +113,12 @@ namespace Projeto_Cliínica.Controllers
                     .FindAsync(1);
             if (senha1 != senha2)
                 return BadRequest("As senhas não coincidem!");
+            if (senha1 == "admin")
+                return BadRequest("A senha nova não pode ser igual à senha inicial do sistema!");
 
             try
             {
-                loginValidacao.Senha = senha1;
+                loginValidacao.Senha = login.geraHash(senha1);
                 await dataContext.SaveChangesAsync();
                 Sair();
                 return Ok(true);
@@ -127,7 +138,7 @@ namespace Projeto_Cliínica.Controllers
             {
                 Login login = new Login();
                 login.User = "admin";
-                login.Senha = "admin";
+                login.Senha = login.geraHash("admin");
                 login.Papel = 0;
                 dataContext.TBLogins.Add(login);
                 dataContext.SaveChanges();

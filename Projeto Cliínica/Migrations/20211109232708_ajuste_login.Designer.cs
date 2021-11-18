@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Projeto_Cliínica.Data;
 
 namespace Projeto_Cliínica.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20211109232708_ajuste_login")]
+    partial class ajuste_login
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,9 +72,6 @@ namespace Projeto_Cliínica.Migrations
 
                     b.Property<int>("Papel")
                         .HasColumnType("int");
-
-                    b.Property<bool>("PrimeiroLogin")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Senha")
                         .IsRequired()

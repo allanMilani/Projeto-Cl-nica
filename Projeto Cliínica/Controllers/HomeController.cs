@@ -23,7 +23,12 @@ namespace Projeto_Cliínica.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            if (User.Claims.First(x => x.Type == System.Security.Claims.ClaimTypes.Expired).Value == "S")
+            {
+                return RedirectToAction("Alterar", "Login");
+            }
+            else
+                return View();
         }
 
         public IActionResult Privacy()

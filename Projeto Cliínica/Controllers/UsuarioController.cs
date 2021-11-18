@@ -39,7 +39,7 @@ namespace Projeto_Cliínica.Controllers
         public IActionResult Index()
         {
             List<Usuario> lista = dataContext.TBUsuarios
-                .Include(l => l.Login)
+                //.Include(l => l.Login)
                 .Where(u => u.Status == true)
                 .ToList();
             return View(lista);
@@ -110,8 +110,8 @@ namespace Projeto_Cliínica.Controllers
                             login.User = usuario.Login.User;
                             login.Senha = usuario.Login.Senha;
 
-                            dataContext.TBLogins.Add(login);
-                            dataContext.SaveChanges();
+                            //dataContext.TBLogins.Add(login);
+                            //dataContext.SaveChanges();
 
                             usuarioQuery.Nome = usuario.Nome.Trim();
                             usuarioQuery.Email = usuario.Email;

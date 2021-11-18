@@ -1,0 +1,107 @@
+﻿@{
+    Layout = null;
+    ViewData["Title"] = "Alterar Senha";
+}
+
+@model Projeto_Cliínica.Models.Login;
+<head>
+     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/style.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</head>
+<div class="container h-100">
+        <div class="row h-100">
+            <div class="col-sm-9 col-md-7 col-lg-5 mx-auto align-content-center h-100">
+                <div class="card border-0 shadow rounded-3 my-5">
+                    <div class="card-body p-4 p-sm-5">
+                        <h2 class="card-title text-center mb-2 fw-light fs-5">Nova senha</h2>
+                        <p class="text-center">Digite a nova senha para o usuário administrador</p>
+                        <form method="post">
+                            <div class="form-group mb-3">
+                                <label asp-for="Senha">Senha</label>
+                                <input type="password" class="form-control" asp-for="Senha" id="senha1" placeholder="digite a nova senha">
+                                <span asp-validation-for="Senha" class="text-danger"></span>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label asp-for="Senha">Senha (confirmação)</label>
+                                <input type="password" class="form-control" asp-for="Senha" id="senha2" placeholder="digite novamente">
+                                <span asp-validation-for="Senha" class="text-danger"></span>
+                            </div>
+                            <div class="form-group mb-3">
+                                <span class="text-danger" id="retorno" style="display: none;">As senhas devem ser iguais!</span>
+                            </div>
+                            <div class="d-grid text-center">
+                                <button class="btn btn-primary btn-login text-uppercase fw-bold" id="btnSalvar" type="submit">
+                                    Salvar
+                                </button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        jQuery(document).ready(function ($) {
+            $('#btnSalvar').on('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                const senha1 = $("#senha1").val();
+                const senha2 = $("#senha2").val();
+                
+                if(senha1 != senha2){
+                    $("#retorno").show();
+                    return false;
+                }else{
+                    $("#retorno").hide();
+                }
+
+                const btn = $(this);
+
+                $.ajax({
+                    type: 'post',
+                    url: 'AlteraSenha/',
+                    data: {
+                        senha1: senha1,
+                        senha2: senha2
+                    },
+                    beforeSend: function () {
+                        btn.html(
+                            `<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>&nbsp;Salvar`
+                        ).attr('disabled', true);
+                    },
+                    success: function (response) {
+                        $("#senha1").val('');
+                        $("#senha2").val('');
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Sucesso!',
+                            text: 'Senha alterada com sucesso!'
+                        });
+                        window.setTimeout(function() {
+                             window.location.replace('/');
+                            }, 2000);
+                        
+                    },
+                    error: function (response) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ops, ocorreu um erro na alteração!',
+                            text: response.responseText
+                        });
+                    }
+                }).always(function (response) {
+                    btn.html('Salvar').removeAttr('disabled');
+                });
+
+            });
+        });
+    </script>
