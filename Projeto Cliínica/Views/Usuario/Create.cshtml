@@ -1,0 +1,112 @@
+﻿@{ ViewData["Title"] = "Usuário"; }
+@model Projeto_Cliínica.Models.Login;
+<form action="/Usuario/Create" method="post" id="frmCadastroUsuario">
+    <div class="row mt-4 mb-4">
+        <div class="col-12 col-md-6">
+            <div class="form-group">
+                <label asp-for="@Model.Usuario.Nome"></label>
+                <input asp-for="@Model.Usuario.Nome" class="form-control" required />
+                <span asp-validation-for="@Model.Usuario.Nome" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="form-group">
+                <label asp-for="@Model.Usuario.Email"></label>
+                <input asp-for="@Model.Usuario.Email" class="form-control" required />
+                <span asp-validation-for="@Model.Usuario.Email" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="form-group">
+                <label asp-for="@Model.Usuario.DataNascimento"></label>
+                <input asp-for="@Model.Usuario.DataNascimento" class="form-control" required />
+                <span asp-validation-for="@Model.Usuario.DataNascimento" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-8">
+            <div class="form-group">
+                <label asp-for="@Model.Usuario.CPF"></label>
+                <input asp-for="@Model.Usuario.CPF" class="form-control cpf" required />
+                <span asp-validation-for="@Model.Usuario.CPF" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="form-group">
+                <label asp-for="@Model.LoginUsuario"></label>
+                <input asp-for="@Model.LoginUsuario" class="form-control" required />
+                <span asp-validation-for="@Model.LoginUsuario" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="form-group">
+                <label asp-for="@Model.Senha"></label>
+                <input asp-for="@Model.Senha" class="form-control" required />
+                <span asp-validation-for="@Model.Senha" class="text-danger small"></span>
+            </div>
+        </div>
+       <div class="col-12 col-md-6">
+           <div class="form-group">
+                <label asp-for="@Model.TipoAcesso"></label>
+                <select asp-for="@Model.TipoAcesso.ID" class="form-control" data-val="true" asp-items="@ViewBag.Acessos"></select>
+                <span asp-validation-for="@Model.TipoAcesso.ID" class="text-danger small"></span>
+           </div>
+       </div>
+        <div class="col-12">
+            <div class="form-group">
+                <button type="submit" id="btnCadastrarUsuario" class="btn btn-primary">Salvar</button>
+            </div>
+        </div>
+        <div class="col-12">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        </div>
+    </div>
+</form>
+<script>
+    jQuery(document).ready(function ($) {
+        $("#btnCadastrarUsuario").on("click", function (event) {
+            if ($("#frmCadastroUsuario")[0].checkValidity() == false)
+                return;
+            else {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const $form = $("#frmCadastroUsuario");
+                const dadosForm = new FormData($form[0]);
+                const urlForm = $form.attr("action");
+                const method = $form.attr("method");
+
+                $.ajax({
+                    type: method,
+                    url: urlForm,
+                    data: dadosForm,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function () {
+                        $form.find("button").html(
+                            "<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>&nbsp;Salvar"
+                        ).attr("disabled", true);
+                    },
+                    success: function (response) {
+                        $form[0].reset();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Sucesso!',
+                            text: 'Usuário salvo com sucesso'
+                        })
+                    },
+                    error: function (response) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ops, ocorreu um erro inesperado no cadastro do usuário',
+                            text: response.responseText
+                        })
+                    }
+                }).always(function (response) {
+                    console.log(response);
+                    $form.find("button").html("Salvar").removeAttr("disabled");
+                });
+            }
+        });
+    });
+</script>

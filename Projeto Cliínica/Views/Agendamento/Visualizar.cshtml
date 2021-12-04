@@ -1,0 +1,23 @@
+﻿@{ ViewData["Title"] = "Visualizar"; }
+@model Projeto_Cliínica.Models.Agendamento
+<div class="row">
+    <div class="col-12 col-md-6">
+        <div class="form-group">
+            <label asp-for="@Model.HoraInicio"></label>
+            <input asp-for="@Model.HoraInicio" class="form-control horaInicio" disabled />
+        </div>
+    </div>
+    <div class="col-12 col-md-6">
+        <div class="form-group">
+            <label asp-for="@Model.HoraFim"></label>
+            <input asp-for="@Model.HoraFim" class="form-control horaFim" disabled />
+            <span asp-validation-for="@Model.HoraFim" class="text-danger small"></span>
+        </div>
+    </div>
+    <div class="col-12 col-md-12">
+        <div class="form-group">
+            <label asp-for="@Model.AnotacoesMedico"></label>
+            <textarea asp-for="@Model.AnotacoesMedico" class="form-control anotacoes" disabled></textarea>
+        </div>
+    </div>
+</div>

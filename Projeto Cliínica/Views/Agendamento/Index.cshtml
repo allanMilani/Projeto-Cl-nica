@@ -1,0 +1,319 @@
+﻿@{
+    ViewData["Title"] = "Agendamento";
+}
+@model IEnumerable<Agendamento>;
+<div class="row">
+    <div class="col-12 mt-2 mb-3">
+        <h1>Listagem de Agendamento</h1>
+        <a asp-action="Create" class="btn btn-primary mt-3"> Novo Agendamento </a>
+    </div>
+</div>
+<form method="post">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <div class="form-group">
+                <label for="txtPaciente">Nome do Paciente</label>
+                <input type="text" id="txtPaciente" name="Paciente.Usuario.Nome" class="form-control" placeholder="digite o nome do paciente" />
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="form-group">
+                <label for="txtMedico">Nome do Médico</label>
+                <input type="text" id="txtMedico" name="Medico.Usuario.Nome" class="form-control" placeholder="digite o nome do medico" />
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="form-group">
+                <label for="dtDataConsulta">Data da Consulta</label>
+                <input type="date" id="dtDataConsulta" name="DataHoraConsulta" class="form-control" />
+            </div>
+        </div>
+        <div class="col-12 mt-3">
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Pesquisar</button>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="row">
+    <div class="col-12">
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.ID)</th>
+                    <th>@Html.DisplayNameFor(model => model.Paciente)</th>
+                    <th>@Html.DisplayNameFor(model => model.Medico)</th>
+                    <th>@Html.DisplayNameFor(model => model.DataHoraConsulta)</th>
+                    <th class="text-center">Anotações</th>
+                    <th class="text-center">Visualizar</th>
+                    <th class="text-center">Cancelar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if(Model != null)
+            {
+                @foreach(Agendamento agendamento in Model)
+                {
+                <tr @(agendamento.IsCancel == false ? "style='background: #cc0000'" : "")>
+                    <td>@agendamento.ID</td>
+                    <td>@agendamento.Paciente.Usuario.Nome</td>
+                    <td>@agendamento.Medico.Usuario.Nome</td>
+                    <td>@agendamento.DataHoraConsulta</td>
+                    <td class="text-center">
+                        <a class="btn btn-sm btn-success btnAnotacoes" asp-action="Anotacoes" asp-route-id="@agendamento.ID" data-code="@agendamento.ID" style="color: #ffffff; font-size:16px">
+                            <i class="fas fa-marker"></i>
+                        </a>
+                    </td>
+                    <td class="text-center">
+                        <a class="btn btn-sm btn-warning btnAbrirModalVisualizar" data-toggle="modal" data-target="#modalVisualizar" data-code="@agendamento.ID" style="color: #ffffff; font-size:16px">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </td>
+                    <td class="text-center">
+                        <a class="btn btn-sm btn-danger btnAbrirModalCancelamento" data-toggle="modal" data-target="#modalCancelamento" data-code="@agendamento.ID" style="color: #ffffff; font-size:16px">
+                            <i class="fas fa-ban"></i>
+                        </a>
+                    </td>
+                </tr>
+                }
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal" id="modalCancelamento" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <form action="/Agendamento/Cancel" method="post" id="frmCancelarAgendamento">
+            <input type="hidden" name="ID" id="idCancelamento" />
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center" style="padding-top: 12px;">
+                        <span class="h4">Por favor informe abaixo os dados para cancelar a consulta</span>
+                    </div>
+                    <div class="form-group mt-4">
+                        <label>Motivo do cancelamento</label>
+                        <textarea name="MotivoCancelamento" class="form-control" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-center" style="border-top: 0px;">
+                    <button type="submit" class="btn btn-sm btn-primary" id="btnCancelar">Enviar</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+         </form>
+    </div>
+</div>
+<div class="modal" id="modalVisualizar" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <form action="/Agendamento/Visualizar" method="post" id="frmVisualizarAnotacoes">
+            <input type="hidden" name="ID" id="idVisualizar" />
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center" style="padding-top: 12px;">
+                        <span class="h4">Por favor informe abaixo a chave da anotação</span>
+                    </div>
+                    <div class="form-group mt-4">
+                        <div class="form-group">
+                            <label>Chave</label>
+                            <input type="password" name="chave" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-center" style="border-top: 0px;">
+                    <button type="submit" class="btn btn-sm btn-primary" id="btnVisualizar">Enviar</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal" id="modalValidaAnotacao" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <form action="/Agendamento/Anotacoes" method="get" id="frmValidaAnotacao">
+            <input type="hidden" name="ID" id="idAnotacao" />
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center" style="padding-top: 12px;">
+                        <span class="h4">Por favor informe abaixo a chave da anotação</span>
+                    </div>
+                    <div class="form-group mt-4">
+                        <div class="form-group">
+                            <label>Chave</label>
+                            <input type="password" name="chave" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-center" style="border-top: 0px;">
+                    <button type="submit" class="btn btn-sm btn-primary" id="btnValidaAnotacao">Enviar</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function ($) {
+        var trReference = null;
+
+        $('.btnAbrirModalCancelamento').on('click', function () {
+            trReference = $(this).parents(':eq(1)');
+        });
+
+
+        $('#modalCancelamento, #modalVisualizar').on('show.bs.modal', function (e) {
+            let code = $(e.relatedTarget).data('code');
+            $(this).find('input[name="ID"]').val(code);
+        });
+
+        $(document).on('click', '.btnAnotacoes', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            let code = $(this).attr('data-code');
+            let link = $(this).attr('href');
+            $.ajax({
+                type: 'POST',
+                url: '/Agendamento/ExisteAnotacao',
+                data: {
+                    ID: code,
+                },
+                success: function (response) {
+                    $('#idAnotacao').val(code);
+                    $('#modalValidaAnotacao').modal('show');
+                },
+                error: function (response) {
+                    window.location.href = link;
+                }
+            });
+        });
+
+        $(document).on('click', '#btnValidaAnotacao', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            if ($("#frmValidaAnotacao")[0].checkValidity() == false)
+                return;
+            else {
+                const $form = $('#frmValidaAnotacao');
+                const id = $form.find('input[name="ID"]').val();
+                const chave = $form.find('input[name="chave"]').val();
+                const btn = $(this);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/Agendamento/ValidaChave',
+                    data: {
+                        ID: id,
+                        Chave: chave
+                    },
+                    beforeSend: function () {
+                        btn.html(
+                            `<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>&nbsp;Salvar`
+                        ).attr('disabled', true);
+                    },
+                    success: function (response) {
+                        $('#frmValidaAnotacao').submit();
+                    },
+                    error: function (response) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ops, a chave informada está incorreta',
+                            text: response.responseText
+                        });
+                    }
+                }).always(function (response) {
+                    btn.html('Salvar').removeAttr('disabled');
+                });
+
+            }
+        });
+
+        $(document).on('click', '#btnVisualizar', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            if ($("#frmVisualizarAnotacoes")[0].checkValidity() == false)
+                return;
+            else {
+                const $form = $('#frmVisualizarAnotacoes');
+                const id = $form.find('input[name="ID"]').val();
+                const chave = $form.find('input[name="chave"]').val();
+                const btn = $(this);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/Agendamento/ValidaChave',
+                    data: {
+                        ID: id,
+                        Chave: chave
+                    },
+                    beforeSend: function () {
+                        btn.html(
+                            `<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>&nbsp;Salvar`
+                        ).attr('disabled', true);
+                    },
+                    success: function (response) {
+                        $('#frmVisualizarAnotacoes').submit();
+                    },
+                    error: function (response) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ops, a chave informada está incorreta',
+                            text: response.responseText
+                        });
+                    }
+                }).always(function (response) {
+                    btn.html('Salvar').removeAttr('disabled');
+                });
+
+            }
+        });
+
+        $(document).on('click', '#btnCancelar', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            if ($("#frmCancelarAgendamento")[0].checkValidity() == false)
+                return;
+            else {
+                const $form = $('#frmCancelarAgendamento');
+                const id = $form.find('input[name="ID"]').val();
+                const motivo = $form.find('textarea[name="MotivoCancelamento"]').val();
+                const url = $form.attr('action');
+                const btn = $(this);
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: {
+                        ID: id,
+                        motivo: motivo
+                    },
+                beforeSend: function () {
+                        btn.html(
+                            `<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>&nbsp;Salvar`
+                        ).attr('disabled', true);
+                    },
+                    success: function (response) {
+                        $("#modalCancelamento").modal("hide");
+                        trReference.css({ 'background':'#cc0000'});
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Sucesso!',
+                            text: 'Agendamento cancelado com sucesso!'
+                        })
+                    },
+                    error: function (response) {
+                        $("#modalCancelamento").modal("hide");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ops, ocorreu um erro inesperado no cancelamento do agendamento',
+                            text: response.responseText
+                        });
+                    }
+                }).always(function (response) {
+                    btn.html('Salvar').removeAttr('disabled');
+                });
+
+            }
+        });
+
+    });
+</script>
