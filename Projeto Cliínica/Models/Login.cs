@@ -31,5 +31,8 @@ namespace Projeto_Cliínica.Models
         [DisplayName("Tipo de Acesso")]
         public TipoAcessos TipoAcesso { get; set; }
         public int? TipoAcessoID { get; set; }
+
+        [DisplayName("Status Login")]
+        public bool Status { get; set; }
     }
 }

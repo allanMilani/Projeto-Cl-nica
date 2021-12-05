@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Projeto_Cliínica.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "A")]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public class UsuarioController : Controller
     {
@@ -48,7 +48,7 @@ namespace Projeto_Cliínica.Controllers
             List<Login> lista = dataContext.TBLogins
                .Include(u => u.Usuario)
                .Include(ta => ta.TipoAcesso)
-               .Where(u => u.Usuario.Status == true)
+               .Where(u => u.Usuario.Status == true && u.Status == true)
                .ToList();
             return View(lista);
         }
@@ -64,7 +64,7 @@ namespace Projeto_Cliínica.Controllers
                 ViewBag.Acessos = listaAcessos;
                 IQueryable<Login> query = dataContext.TBLogins
                     .Include(u => u.Usuario)
-                    .Where(u => u.Usuario.Status == true);
+                    .Where(u => u.Usuario.Status == true && u.Status == true);
                 if (login.Usuario.Nome != null && login.Usuario.Nome != "")
                     query = query.Where(
                         m => m.Usuario.Nome.ToUpper().Contains(login.Usuario.Nome.ToUpper())
@@ -127,7 +127,7 @@ namespace Projeto_Cliínica.Controllers
 
                     login.UsuarioID = usuarioQuery.ID;
                     login.Usuario = null;
-
+                    login.Status = true;
                     login.Senha = Criptografia.GeraHash(login.Senha);
                     dataContext.TBLogins.Add(login);
 
@@ -151,12 +151,12 @@ namespace Projeto_Cliínica.Controllers
                     usuario.DataNascimento = login.Usuario.DataNascimento;
                     usuario.Status = true;
 
-                    login.TipoAcessoID = login.TipoAcesso.ID;
-                    login.TipoAcesso = null;
-
                     dataContext.TBUsuarios.Add(usuario);
                     dataContext.SaveChanges();
 
+                    login.TipoAcessoID = login.TipoAcesso.ID;
+                    login.TipoAcesso = null;
+                    login.Status = true;
                     login.UsuarioID = usuario.ID;
                     login.Usuario = null;
 
@@ -235,7 +235,7 @@ namespace Projeto_Cliínica.Controllers
                 Usuario usuario = await dataContext.TBUsuarios.FindAsync(login.UsuarioID);
                 try
                 {
-                    usuario.Status = false;
+                    login.Status = false;
                     await dataContext.SaveChangesAsync();
                     return Ok(true);
                 }

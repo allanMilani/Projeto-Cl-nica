@@ -35,7 +35,7 @@ namespace Projeto_Cliínica.Controllers
             {
                 Login loginQuery = dataContext.TBLogins
                      .Include(l => l.TipoAcesso)
-                   .FirstOrDefault(l => l.LoginUsuario == login.LoginUsuario);
+                   .FirstOrDefault(l => l.LoginUsuario == login.LoginUsuario && l.Status == true);
                 if (loginQuery != null)
                 {
                     if (loginQuery.Senha == Criptografia.GeraHash(login.Senha))
@@ -111,6 +111,42 @@ namespace Projeto_Cliínica.Controllers
             dataContext.TBLogins.Add(loginAdm);
             dataContext.SaveChanges();
             return RedirectToAction("Index", "Login");
+        }
+
+        public IActionResult Logoff()
+        {
+            HttpContext.SignOutAsync();
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult AlterarSenha()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult AlterarSenha(string SenhaAtual, string SenhaAtualConfirmacao, string NovaSenha, string NovaSenhaConfirmacao)
+        {
+            int idSessao = Convert.ToInt32(User.Claims.First(x => x.Type == ClaimTypes.Sid).Value);
+            Login login = dataContext.TBLogins.FirstOrDefault(l => l.ID == idSessao);
+            if(SenhaAtualConfirmacao != SenhaAtual)
+            {
+                ViewBag.Erro = "A senha atual e de confirmação não coencidem";
+                return View();
+            }
+            if (login.Senha != Criptografia.GeraHash(SenhaAtual))
+            {
+                ViewBag.Erro = "A senha informada está incorreta";
+                return View();
+            }
+            if(NovaSenha != NovaSenhaConfirmacao)
+            {
+                ViewBag.Erro = "A nova senha e de confirmação não coencidem";
+                return View();
+            }
+            login.Senha = Criptografia.GeraHash(NovaSenha);
+            dataContext.SaveChanges();
+            return RedirectToAction("Index", "Home");
         }
     }
 }

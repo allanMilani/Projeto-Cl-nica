@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Projeto_Cliínica.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "A,S,M")]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public class AgendamentoController : Controller
     {
