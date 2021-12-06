@@ -804,3 +804,5 @@ C:\Users\allan\Downloads\Projeto-Clinica-2.0\Projeto Cliínica\obj\Debug\net5.0\
 C:\Users\allan\Downloads\Projeto-Clinica-2.0\Projeto Cliínica\obj\Debug\net5.0\Razor\Views\Agendamento\Visualizar.cshtml.g.cs
 C:\Users\allan\Downloads\Projeto-Clinica-2.0\Projeto Cliínica\obj\Debug\net5.0\Razor\Views\Login\Alterar.cshtml.g.cs
 C:\Users\allan\Downloads\Projeto-Clinica-2.0\Projeto Cliínica\obj\Debug\net5.0\Razor\Views\Login\AlterarSenha.cshtml.g.cs
+C:\Users\allan\Downloads\Projeto-Clinica-2.0\Projeto Cliínica\obj\Debug\net5.0\Razor\Views\Login\RecuperarSenha.cshtml.g.cs
+C:\Users\allan\Downloads\Projeto-Clinica-2.0\Projeto Cliínica\obj\Debug\net5.0\Razor\Views\Login\NovaSenha.cshtml.g.cs

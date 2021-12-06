@@ -45,7 +45,6 @@
 <script>
     jQuery(document).ready(function ($) {
         $("#btnCriarAgendamento").on("click", function (event) {
-            console.log($("#frmCadastroAgendamento")[0].checkValidity());
             if ($("#frmCadastroAgendamento")[0].checkValidity() == false)
                 return;
             else {
@@ -85,7 +84,6 @@
                         })
                     }
                 }).always(function (response) {
-                    console.log(response);
                     $form.find("button").html("Salvar").removeAttr("disabled");
                 });
             }

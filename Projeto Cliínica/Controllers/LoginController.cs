@@ -9,12 +9,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http.Extensions;
+using System.Threading.Tasks;
 
 namespace Projeto_Cliínica.Controllers
 {
     public class LoginController : Controller
     {
         private DataContext dataContext;
+        private string chaveCriptografi = "6u4SwXD3bOmxWYLKTcYe";
         public LoginController(DataContext dc)
         {
             dataContext = dc;
@@ -147,6 +150,89 @@ namespace Projeto_Cliínica.Controllers
             login.Senha = Criptografia.GeraHash(NovaSenha);
             dataContext.SaveChanges();
             return RedirectToAction("Index", "Home");
+        }
+        
+        public IActionResult RecuperarSenha()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult RecuperarSenha(string emailRecuperar)
+        {
+            Login loginQuery = dataContext.TBLogins
+                .Include(l => l.Usuario)
+               .FirstOrDefault(l => l.Usuario.Email == emailRecuperar);
+            if(loginQuery == null)
+            {
+                ViewBag.Erro = "O email informado não existe";
+                return View();
+            }
+
+            string id = Criptografia.Cryptografar(Convert.ToString(loginQuery.ID), chaveCriptografi);
+            string date = Criptografia.Cryptografar(Convert.ToString(DateTime.Now), chaveCriptografi);
+            string token = id + "." + date;
+            string message = "<html>"
+                             + "<head><title>Recuperar Senha - Projeto Clínica</title></head>"
+                             + "<body>"
+                             + "Olá "
+                             + loginQuery.Usuario.Nome
+                             + ", acesse o link para recuperar sua senha."
+                             + "<a href='https://localhost:44332/Login/NovaSenha?token="+ token +"' target='_blank'>Clique aqui</a>"
+                             + "</body>"
+                             + "</html>";
+            if(Email.SendEmail(emailRecuperar, "Recuperar Senha - Projeto Clínica", message)){
+                ViewBag.Success = "O link de redefinição foi enviada para seu email";
+                return View();
+            }
+            else
+            {
+            ViewBag.Erro = "Ocorreu um erro na redefinição, por favor tente novamente";
+            return View();
+            }
+
+        }
+
+        public IActionResult NovaSenha(string token)
+        {
+            string[] tokens = token.Split('.');
+            int ID = Convert.ToInt32(Criptografia.Descriptografar(tokens[0], chaveCriptografi));
+            var date = Convert.ToDateTime(Criptografia.Descriptografar(tokens[1], chaveCriptografi));
+            var dataAtual = DateTime.Now;
+            TimeSpan diferenca = date - dataAtual;
+
+            if (diferenca.TotalMinutes > 15)
+            {
+                ViewBag.Erro = "Link expirado";
+            }
+            else
+            {
+                ViewBag.ID = ID;
+            }
+
+            return View();
+
+        }
+
+        [HttpPost]
+        public IActionResult NovaSenha(int? ID, string NovaSenha, string NovaSenhaConfirmacao)
+        {
+            if (ID.HasValue)
+            {
+                Login login = dataContext.TBLogins
+                    .FirstOrDefault(l => l.ID == ID);
+                if(NovaSenha == NovaSenhaConfirmacao)
+                {
+                    login.Senha = Criptografia.GeraHash(NovaSenha);
+                    dataContext.SaveChanges();
+                    ViewBag.Success = "Senha alterada com sucesso!";
+                    return View();
+                }
+                ViewBag.Erro = "As Senhas não coencidem";
+                return View();
+            }
+            ViewBag.Erro = "O ID informado está inválido";
+            return View();
         }
     }
 }

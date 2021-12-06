@@ -1,0 +1,67 @@
+﻿@{ 
+    Layout = null;
+    ViewData["Title"] = "Nova Senha"; 
+}
+
+@model Projeto_Cliínica.Models.Login;
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../Public/Css/login.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body class="heigth-100">
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="col-sm-9 col-md-7 col-lg-5 mx-auto align-content-center h-100">
+                <div class="card border-0 shadow rounded-3 my-5">
+                    <div class="card-body p-4 p-sm-5">
+                        @if (ViewBag.Erro == null)
+                        {
+                    <h2 class="card-title text-center mb-2 fw-light fs-5">Informe a nova Senha</h2>
+                                    <form action="/Login/NovaSenha" method="post" id="frmNovaSenha">
+                                        <input type="hidden" id="ID" name="ID" value="@ViewBag.ID" />
+                                        <div class="form-group mb-3">
+                                            <label>Nova Senha</label>
+                                            <input type="password" class="form-control" name="NovaSenha" id="novaSenha" placeholder="digite a nova senha" required>
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <label>Nova Senha (Confirmação)</label>
+                                            <input type="password" class="form-control" name="NovaSenhaConfirmacao" id="novaSenhaConfirmacao" placeholder="confirme a nova senha" required>
+                                        </div>
+                                        <div class="d-grid text-center mb-3">
+                                            <button id="btnAlterarSenha" class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">
+                                                Entrar
+                                            </button>
+                                        </div>
+                                    </form>}
+                        @if (ViewBag.Erro != null)
+                        {
+                            <div class="alert alert-danger">@ViewBag.Erro</div>
+                        }
+                        @if (ViewBag.Success != null)
+                        {
+                            <div class="alert alert-success">@ViewBag.Success</div>
+                            <script>
+                                    setTimeout(function () {
+                                        window.location.href = "/Login/Index";
+                                    }, 1000);
+                            </script>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>
